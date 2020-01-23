@@ -136,6 +136,7 @@ convert_dec:
 
 convert_octal:
     mov     ecx, eax    ;ecx holds begging and ebx end
+    mov     edi, eax    ;preserve pointer to first in case of an error
     xor     eax, eax
     xor     edx, edx
 convert_oct:
@@ -153,6 +154,7 @@ convert_oct:
 
 convert_binary:
     mov     ecx, eax    ;ecx holds begging and ebx end
+    mov     edi, eax    ;preserve pointer to first in case of an error
     xor     eax, eax
     xor     edx, edx
 convert_bin:
@@ -169,9 +171,8 @@ convert_bin:
     jmp     convert_bin
 
 restart_process: ;if digit in binary or octal does not fit to system restart process
-    inc     ebx
-    mov     eax, ebx
-    jmp     find_uint
+    mov     eax, edi
+    jmp     convert_decimal
 
 uint_not_found:         ;returns 0 if string does not contain any integer
     mov     eax, 0
