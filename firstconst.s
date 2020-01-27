@@ -51,8 +51,14 @@ check_suffix:
     cmp     dh, 'f'
     jg      is_octal
     cmp     dh, 'a'
+    jge     continue_finding_const
+
+    cmp     dh, 'F'
+    jg      is_octal
+    cmp     dh, 'A'
     jl      is_octal
-;can be a hexadecimal value because letter after sequence is in range [a-f]
+;can be a hexadecimal value because letter after sequence is in range [a-f] or [A-F]
+continue_finding_const:
     mov     ecx, ebx
     inc     ecx
 find_next_hex_digit:
@@ -62,13 +68,17 @@ find_next_hex_digit:
     test    dl, dl
     jz      is_octal
     cmp     dl, 'f'
-    jg      check_if_digit
+    jg      check_hex_suffix
     cmp     dl, 'a'
     jge     find_next_hex_digit     ;in range [a-f]
 
-check_if_digit:
+    cmp     dl, 'F'
+    jg      is_octal
+    cmp     dl, 'A'
+    jge     find_next_hex_digit     ;in range [A-F]
+
     cmp     dl, '9'
-    jg      check_hex_suffix        ;is_hex_digit() == false goto checking new suffix
+    jg      is_octal        ;is_hex_digit() == false goto checking new suffix
     cmp     dl, '0'
     jge     find_next_hex_digit     ;is in range [0-9] so goto checking next character   
 
@@ -102,9 +112,16 @@ convert_hex:
     mov     dl, [ecx]
 ;is_small_char() to determine if I need to substract '0' or 'a' from character to convert it to int
     cmp     dl, '9'
-    jg      small_char
-
+    jg      upper_char
+;digit
     sub     dl, '0'
+    jmp     continue_hex_convertion
+
+upper_char:
+    cmp     dl, 'F'
+    jg      small_char
+    sub     dl, 'A'
+    add     dl, 10 
     jmp     continue_hex_convertion
 
 small_char:

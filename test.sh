@@ -10,9 +10,10 @@ echo '======== TEST HEXADECIMAL ========================'
 
 ./firstconst 'wiktor 123h'
 ./firstconst '321h wiktor'
-./firstconst '0ah' 
+./firstconst '0ah' '0Ah'
 ./firstconst '0h'
-./firstconst 'wiktor 123abfh' '00112a32ah'
+./firstconst 'wiktor 123abfh' 'WIKTOR 123ABFh' 'wiktor 123AbFh' '00112a32ah'
+./firstconst 'lorem ipsum 0aBc1ABc2h'
 
 echo ''
 
